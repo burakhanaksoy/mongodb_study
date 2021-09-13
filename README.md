@@ -220,7 +220,7 @@ db.test_coll.find({}).pretty()
 
 Now our db is empty 😑
 
-<b>Remember that command({}) will do a collective operation. Here, `{}` somewhat means "all".
+<b>Remember that command({}) will do a collective operation. Here, `{}` somewhat means "all".</b>
  
  ---
  
