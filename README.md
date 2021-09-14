@@ -15,6 +15,8 @@
 [Cursor Object](#cursor-object)
 [Projection](#projection)
 [Working With Arrays](#arrays)
+[Using $gt $lt](#basic-operators)
+[Chapter 1 Summary](#summary-1)
 
 
 <p id="introduction">
@@ -406,6 +408,29 @@ Max
 
  <b>Remember that we get the actual data with findOne, and we get cursor object with find.</b>
  
+ </p>
+ 
+ ---
+ 
+ <p id ="basic-operators">
+ <h3>Using $gt $lt</h3>
+ 
+ We can use $gt and $lt, along with $gte and $lte to make comparison based search in MongoDB.
+ 
+ <img width="505" alt="Screen Shot 2021-09-14 at 10 27 19 PM" src="https://user-images.githubusercontent.com/31994778/133321462-90b4517e-16c2-4621-9cd6-782a01363f2e.png">
+
+<img width="510" alt="Screen Shot 2021-09-14 at 10 27 32 PM" src="https://user-images.githubusercontent.com/31994778/133321470-29fc16a8-81a9-4a16-a01b-11446a354086.png">
+
+ </p>
+ 
+ ---
+ 
+ <p id="summary-1">
+ <h3>Chapter 1 Summary</h3>
+ 
+ <p align="center">
+ <img width="917" alt="Screen Shot 2021-09-14 at 10 24 34 PM" src="https://user-images.githubusercontent.com/31994778/133321745-b78d4c8a-4496-4567-8e86-315a85cc815b.png">
+</p>
  </p>
  
  ---
