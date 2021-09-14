@@ -13,6 +13,7 @@
 [Structure of Mongodb](#structure)
 [Common Functions](#functions)
 [Cursor Object](#cursor-object)
+[Projection](#projection)
 
 
 <p id="introduction">
@@ -324,6 +325,28 @@ Only updates the first matching document.
  
  <img width="609" alt="Screen Shot 2021-09-14 at 8 54 27 PM" src="https://user-images.githubusercontent.com/31994778/133308970-70a3bc51-aed3-4889-a3c9-a76dd82fd7f1.png">
 
+ <b>For create, update, and delete methods, cursor object doesn't exist, because they don't fetch data.</b>
+ 
+ </p>
+ 
+ ---
+ 
+ <p id="projection">
+ 
+ <b>Projection is to go when we don't want to display unwanted fields.</b>
+ 
+ Here's what I got in my db.
+ 
+ <img width="483" alt="Screen Shot 2021-09-14 at 9 44 07 PM" src="https://user-images.githubusercontent.com/31994778/133315710-20621890-38dc-432c-a950-61cd8e626440.png">
+
+ Let's say that I only want to see name, last_name and address information. To do that, we use projection.
+ 
+ `db.students_coll.find({},{"_id":0, "name":1, "last_name":1, "address":1 })`
+ 
+ <img width="490" alt="Screen Shot 2021-09-14 at 9 46 53 PM" src="https://user-images.githubusercontent.com/31994778/133316145-11228e3d-4c26-48d7-8bd6-bebf57fa8020.png">
+
+ wanted fields take `1`, unwanted fields take `0`.
+ 
  </p>
  
  ---
