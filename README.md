@@ -75,9 +75,8 @@
  And, to double check, we can display the newly inserted data via Robo3T.
  
  <p align="center">
-  <img width="700" alt="Screen Shot 2021-09-13 at 9 03 47 PM" src="https://user-images.githubusercontent.com/31994778/133134167-3b8695f8-c12c-49a8-a090-4f99dedfa06c.png">
+  <img width="400" alt="Screen Shot 2021-09-13 at 9 03 47 PM" src="https://user-images.githubusercontent.com/31994778/133134167-3b8695f8-c12c-49a8-a090-4f99dedfa06c.png">
   </p>
- </p>
  
  This was our first interaction with MongoDB and Robo3T.
  
@@ -93,6 +92,19 @@
   { _id: ObjectId("613f923b70d0e7fb53a69c77"), name: 'Burak' }
 ]
 ```
+
+Also, we can views our dbs through `show dbs` command
+
+
+ <img width="157" alt="Screen Shot 2021-09-14 at 7 51 38 AM" src="https://user-images.githubusercontent.com/31994778/133196968-382e2d13-babe-4d8d-aee8-bf0ad29816df.png">
+
+ Also, we can switch to a different db with `use` command
+  
+  <img width="252" alt="Screen Shot 2021-09-14 at 7 53 38 AM" src="https://user-images.githubusercontent.com/31994778/133197142-9b5b4647-23f6-4cd3-80ab-7f200a15689d.png">
+
+ </p>
+ 
+ </p>
  
  ---
  
@@ -224,5 +236,32 @@ Now our db is empty 😑
  
  ---
  
+ <h3>updateMany</h3>
+ 
+ To show update, I will be working on a new db.
+<p align="center"> 
+ <img width="503" alt="Screen Shot 2021-09-14 at 7 59 18 AM" src="https://user-images.githubusercontent.com/31994778/133197586-e1e6b6d6-e8b8-4e84-b15d-2540f30fd87e.png">
+</p>
+
+Let's find the ones with occupation : null, and change it to student.
+
+```
+db.students_coll.updateMany({"occupation":null},{"$set":{"occupation":"student"}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+```
+
+We changed the matching ones successfully.
+
+<p align="center">
+ <img width="850" alt="Screen Shot 2021-09-14 at 8 03 22 AM" src="https://user-images.githubusercontent.com/31994778/133197999-25569a70-5b3d-4f5c-a31b-b94a0d543bae.png">
+ </p>
+ 
+<b>`$set` is a MongoDB operator used for setting a field of a document.</b>
  
  </p>
