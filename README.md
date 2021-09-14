@@ -14,6 +14,7 @@
 [Common Functions](#functions)
 [Cursor Object](#cursor-object)
 [Projection](#projection)
+[Working With Arrays](#arrays)
 
 
 <p id="introduction">
@@ -346,6 +347,64 @@ Only updates the first matching document.
  <img width="490" alt="Screen Shot 2021-09-14 at 9 46 53 PM" src="https://user-images.githubusercontent.com/31994778/133316145-11228e3d-4c26-48d7-8bd6-bebf57fa8020.png">
 
  wanted fields take `1`, unwanted fields take `0`.
+ 
+ </p>
+ 
+ ---
+ 
+ <p id="Working With Arrays">
+ MongoDB documents can also hold array data.
+ 
+ Say that we have a document like this
+ 
+ ```json
+ {
+        "name": "Burakhan",
+        "last_name": "Aksoy",
+        "age": 26,
+        "occupation": "Junior Python Developer",
+        "address": {
+            "city": "Istanbul",
+            "country": "Turkey"
+        },
+        "hobbies": [
+            "music",
+            "games"
+        ]
+    }
+ ```
+ 
+ <img width="640" alt="Screen Shot 2021-09-14 at 10 06 49 PM" src="https://user-images.githubusercontent.com/31994778/133318847-154c119b-1e5a-45e1-94ac-bc4f256cf818.png">
+
+ Now, I can reach the related document in MongoDB by making a search on "hobbies" field.
+ 
+ ```
+ db.users.findOne({"hobbies":"movies"})
+{
+  _id: ObjectId("6140f27470d0e7fb53a69ce2"),
+  name: 'Max',
+  last_name: 'Garner',
+  age: 32,
+  occupation: 'Sous Chef',
+  address: { city: 'New York', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ]
+}
+```
+ 
+ And since I use findOne here, I can directly access the field with document.fieldName.
+ 
+ ```
+ db.users.findOne({"hobbies":"movies"}).name
+Max
+```
+ 
+ We can also access a field of embedded document as follows:
+ 
+ `db.coll_name.find({"field.insideField":"value"})`
+ 
+ <img width="503" alt="Screen Shot 2021-09-14 at 10 17 02 PM" src="https://user-images.githubusercontent.com/31994778/133320202-0a803f98-d072-4e00-872d-7ab0d5fab038.png">
+
+ <b>Remember that we get the actual data with findOne, and we get cursor object with find.</b>
  
  </p>
  
