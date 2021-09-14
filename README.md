@@ -12,6 +12,7 @@
 [First Interaction with MongoDB](#first-interaction)
 [Structure of Mongodb](#structure)
 [Common Functions](#functions)
+[Cursor Object](#cursor-object)
 
 
 <p id="introduction">
@@ -263,5 +264,68 @@ We changed the matching ones successfully.
  </p>
  
 <b>`$set` is a MongoDB operator used for setting a field of a document.</b>
+
+---
+
+<h3>updateOne</h3>
+
+`updateOne` is to `updateMany` as `findOne` is to `findMany`. :)
+
+Only updates the first matching document.
+
+<img width="600" alt="Screen Shot 2021-09-14 at 8 18 59 PM" src="https://user-images.githubusercontent.com/31994778/133304079-0ba746ee-b056-4d0e-b08d-821c89f38d09.png">
  
+---
+
+<p id="cursor-object">
+ 
+ <b>Cursor object in MongoDB is just like a generator in Python.</b>
+ 
+ For large documents, when we use `find()` command, MongoDB returns us a cursor object, which holds the data that we want in a space efficient manner.
+ 
+ What I mean by space efficient is that cursor object does contain all the data, but in a format that resembles to a generator in Python.
+ 
+ For example, I have lots of data in my db... Say, millions of data. Returning all the data at once will scream <b>PERFORMANCE ISSUE!!</b>.
+ 
+ Let's do a small example.
+ 
+ <img width="529" alt="Screen Shot 2021-09-14 at 8 35 23 PM" src="https://user-images.githubusercontent.com/31994778/133306400-dd405fbe-72a7-4370-aa25-e288dba199b0.png">
+
+ That's a lot of documents.. Now, let's use `find()`.
+ 
+ <img width="496" alt="Screen Shot 2021-09-14 at 8 36 27 PM" src="https://user-images.githubusercontent.com/31994778/133306755-06bad7ec-aa47-4cb7-97f5-f112076d99cb.png">
+ 
+ As you can see here, MongoDB doesn't return all the data at once. Instead, it returns a cursor object which we waits for `it` to show more data. This is just like `next` in Python's generator.
+ 
+ Imagine returning all that data at once, it would take a long time...
+ 
+ When we exhaust `it`, shell tells us the following:
+ 
+ <img width="157" alt="Screen Shot 2021-09-14 at 8 41 57 PM" src="https://user-images.githubusercontent.com/31994778/133307268-efe3a306-f9dd-48b4-bcef-ab6736c11894.png">
+
+ 
+ We can see all the data through using `toArray()` command.
+ 
+ `db.students_coll.find().toArray()`
+ 
+ And also, we can make operations on the data using `forEach()` command.
+ 
+<img width="729" alt="Screen Shot 2021-09-14 at 8 48 15 PM" src="https://user-images.githubusercontent.com/31994778/133308176-cd8481bb-85ba-4118-b2a7-3aca38da6111.png">
+ 
+<img width="574" alt="Screen Shot 2021-09-14 at 8 48 24 PM" src="https://user-images.githubusercontent.com/31994778/133308187-abb64cae-959b-4852-9c4a-f3cda3ff9bb7.png">
+
+ As a summary:
+ 
+ - Shell gives us the first 20 documents by default.
+ 
+ - After 20 documents, `it` should be used to view more since `find()` command returns a cursor object.
+ 
+ - We cannot use `.pretty()` with `findOne()` since pretty() is a method of the cursor object. But since findOne already returns the data itself, and since data doesn't have pretty() method, using pretty() with findOne fails.
+ 
+ <img width="609" alt="Screen Shot 2021-09-14 at 8 54 27 PM" src="https://user-images.githubusercontent.com/31994778/133308970-70a3bc51-aed3-4889-a3c9-a76dd82fd7f1.png">
+
  </p>
+ 
+ ---
+ 
+ 
