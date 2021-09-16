@@ -605,4 +605,54 @@ We can use {"ordered":false}
  <h3>Understanding writeConcern</h3>
  </p>
  
- 
+ <img width="1024" alt="Screen Shot 2021-09-16 at 10 32 35 PM" src="https://user-images.githubusercontent.com/31994778/133676787-772856cd-6f62-44ac-b603-195117be4a53.png">
+
+When we insert a new document to our collection through a client, i.e., MongoDB shell, this request goes through MongoDB server, as always. 
+
+Then, server directs the incoming request to Storage Engine for writing on the disk.
+
+<b>writeConcern by default makes sure that this document is added to the disk before it goes on inserting another document.</b>
+
+This is a very safe approach, because we want to make sure our data is added on the DB before adding another data. However, writeConcern doesn't ensure that data is added at times when DB connection has a problem. For those times, we want to use `journal:true`.
+
+Journal is the `To do` part of of Storage Engine. If used as `journal:true`, the data will be added to the DB even if connection error occurs in the DB.
+
+Let's make an example:
+
+<img width="600" alt="Screen Shot 2021-09-16 at 11 03 32 PM" src="https://user-images.githubusercontent.com/31994778/133678388-6edc34be-d90f-4fbc-9d0d-a21516268b7b.png">
+
+The difference between these two operations is that the MongoDB server doesn't acknowledge the insert operation of the second document, meaning that we can't make sure if the second document is added successfully or not unless we check the data in DB. Indeed, not very safe.
+
+Now, let's insert another document with journal:true.
+
+```
+db.students.insertOne({"name":"Mehmet", "age":26}, {writeConcern:{"w":0, "j":true}})
+{ acknowledged: false,
+  insertedId: ObjectId("6143a43693587d2fb830c1c4") }
+```
+
+Here, MongoDB will insert this document eventually, even if the connection is shaky and/or disrupted. Might take longer timewise than not using "j":true, but much safer.
+
+<b>By default, writeConcern's "w":1 and "j":undefined or "j":false</b>
+
+Let's insertMany with writeConcern:{"w":0}.
+
+```
+db.students.insertMany([{"name":"Burak"}, {"name":"Ahmet"}, {"name":"Berna"}, {"name":"James"}], {writeConcern:{w:0}})
+{ acknowledged: false,
+  insertedIds: 
+   { '0': ObjectId("6143a52093587d2fb830c1c5"),
+     '1': ObjectId("6143a52093587d2fb830c1c6"),
+     '2': ObjectId("6143a52093587d2fb830c1c7"),
+     '3': ObjectId("6143a52093587d2fb830c1c8") } }
+```
+
+Here, since acknowledged:false, we can't know instantly whether these documents were added successfully unless we check the db.
+
+---
+
+
+
+
+
+
