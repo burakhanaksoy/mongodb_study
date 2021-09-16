@@ -22,6 +22,7 @@
 [Understanding Ordered Insert](#ordered-insert)
 [Understanding writeConcern](#write-concern)
 [Atomicity](#atomicity)
+[Deep Dive into Read Operations](#read-operations)
 
 
 <p id="introduction">
@@ -599,7 +600,8 @@ We can use {"ordered":false}
 
 <img width="351" alt="Screen Shot 2021-09-16 at 10 16 31 PM" src="https://user-images.githubusercontent.com/31994778/133671967-6fc65c93-d2ca-4306-a267-12437768f899.png">
 
- 
+ <img width="501" alt="Screen Shot 2021-09-16 at 11 30 32 PM" src="https://user-images.githubusercontent.com/31994778/133681862-6cffbed3-9d4f-4496-81de-13ebbf829087.png">
+
 ---
 
 <p id="write-concern">
@@ -652,6 +654,9 @@ Here, since acknowledged:false, we can't know instantly whether these documents 
 
 <b>writeConcern can also be applied to update and delete operations.</b>
 
+<img width="401" alt="Screen Shot 2021-09-16 at 11 30 59 PM" src="https://user-images.githubusercontent.com/31994778/133681800-afaf9e27-8fc7-42a6-a951-f25a7a4a6711.png">
+
+
 ---
 
 <p id="atomicity">
@@ -670,6 +675,9 @@ This is the atomicity of MongoDB document insertion.
 
 ---
 
+<p id="read-operations">
+ <h3>Deep Dive into Read Operations</h3>
+ </p>
 
 
 
