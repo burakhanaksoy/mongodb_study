@@ -649,6 +649,8 @@ db.students.insertMany([{"name":"Burak"}, {"name":"Ahmet"}, {"name":"Berna"}, {"
 
 Here, since acknowledged:false, we can't know instantly whether these documents were added successfully unless we check the db.
 
+<b>writeConcern can also be applied to update and delete operations.</b>
+
 ---
 
 
