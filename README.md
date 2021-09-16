@@ -19,6 +19,8 @@
 [MongoDB Compass](#compass)
 [Working With Arrays](#arrays)
 [Accessing Fields of a Nested Document](#accessing-fields)
+[Understanding Ordered Insert](#ordered-insert)
+[Understanding writeConcern](#write-concern)
 
 
 <p id="introduction">
@@ -541,6 +543,66 @@ This goes on and on :)
 
 ---
 
+<p id="ordered-insert">
+ <h3>Understanding Ordered Insert</h3>
+ </p>
+ 
+ <b>By default, when MongoDB insertMany inserts documents one-by-one and stops adding the next document if an error occurs in the document being added.</b>
+ 
+ Let's understand this with an example:
+ 
+ Let's add two documents to our new DB `Hobbies`.
+ 
+ <img width="853" alt="Screen Shot 2021-09-16 at 10 07 15 PM" src="https://user-images.githubusercontent.com/31994778/133670789-04bdb8bd-6529-414c-8b75-f44f51351065.png">
+ 
+ Then, let's try to add more documents.
+ 
+```
+[
+   {
+      "_id":"football",
+      "name":"football"
+   },
+   {
+      "_id":"technology",
+      "name":"technology"
+   },
+   {
+      "_id":"cars",
+      "name":"cars"
+   }
+]
+```
 
+To add these documents, we can use
 
+`db.hobby_coll.insertMany([{"_id":"football", "name":"football"},{"_id":"technology", "name":"technology"}, {"_id":"cars", "name":"cars"}])`
 
+However, this fails...
+
+```
+db.hobby_coll.insertMany([{"_id":"football", "name":"football"},{"_id":"technology", "name":"technology"}, {"_id":"cars", "name":"cars"}])
+MongoBulkWriteError: E11000 duplicate key error collection: Hobbies.hobby_coll index: _id_ dup key: { _id: "technology" }
+```
+
+MongoDB tried to insert all these documents, it inserted football successfully but when it tried to insert technology duplicate key error occured.
+
+- 1. MongoDB stopped adding documents after technology.
+- 2. Documents before technology were added successfully.
+
+How can we change this default behavior?
+
+We can use {"ordered":false}
+
+`db.hobby_coll.insertMany([{"_id":"football", "name":"football"},{"_id":"technology", "name":"technology"}, {"_id":"cars", "name":"cars"}], {"ordered":false})`
+
+<img width="351" alt="Screen Shot 2021-09-16 at 10 16 31 PM" src="https://user-images.githubusercontent.com/31994778/133671967-6fc65c93-d2ca-4306-a267-12437768f899.png">
+
+ 
+---
+
+<p id="write-concern">
+ <h3>Understanding writeConcern</h3>
+ </p>
+ 
+ 
