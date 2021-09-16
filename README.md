@@ -18,6 +18,7 @@
 [Chapter 1 Summary](#summary-1)
 [MongoDB Compass](#compass)
 [Working With Arrays](#arrays)
+[Accessing Fields of a Nested Document](#accessing-fields)
 
 
 <p id="introduction">
@@ -486,4 +487,60 @@ and the query for that was
 
 
 </p>
+
+---
+
+<p id="accessing-fields">
+ <h3>Accessing Fields of a Nested Document</h3>
+</p>
+
+Now, let's say that we have a document like this:
+
+```
+{ _id: ObjectId("6143798193587d2fb830c1bf"),
+  name: 'Burak',
+  lastName: 'Aksoy',
+  favoriteHobby: { name: 'skiing', beenDoingYears: 11, team: 'solo' } }
+```
+
+We can easily use findOne on `favoriteHobby`
+
+<img width="450" alt="Screen Shot 2021-09-16 at 9 12 10 PM" src="https://user-images.githubusercontent.com/31994778/133663485-77fedbe3-f208-4b15-8d22-a593c9907c9e.png">
+
+As we can see, we accessed name field inside favoriteHobby object and use `findOne` command.
+
+Let's add a new field to our embedded `favoriteHobby` object.
+
+`db.users.updateOne({"name":"Burak"}, {"$set":{"favoriteHobby.field":"snow"}})`
+
+<img width="384" alt="Screen Shot 2021-09-16 at 9 23 25 PM" src="https://user-images.githubusercontent.com/31994778/133664929-cbf14255-d444-4412-a2fd-6a7c3833fb59.png">
+
+Now, let's remove `field` field from `favoriteHobby` object.
+
+`db.users.updateOne({"name":"Burak"}, {"$unset":{"favoriteHobby.field":""}})`
+
+<img width="581" alt="Screen Shot 2021-09-16 at 9 25 12 PM" src="https://user-images.githubusercontent.com/31994778/133665139-c350f23e-2f7a-4018-b498-6a67f3bc8ec0.png">
+
+<b>Here, we used $set for adding a new field to our object, and $unset to remove a field.</b>
+
+It doesn't matter how many levels of nesting we have, we can use `.` for accessing fields in each level.
+
+Let's say our document looks like this at the moment:
+
+<img width="502" alt="Screen Shot 2021-09-16 at 9 29 22 PM" src="https://user-images.githubusercontent.com/31994778/133665721-6c3c69e0-f85c-486a-bf0f-79d06df2602a.png">
+
+We can add a new field to innermost nested object in the same way we did before.
+
+`db.users.updateOne({"name":"Burak"},{"$set":{"favoriteHobby.anotherNestedObject.anotherObject.lastField":"Finally!"}})`
+
+And here's our document:
+
+<img width="690" alt="Screen Shot 2021-09-16 at 9 31 55 PM" src="https://user-images.githubusercontent.com/31994778/133666028-44fa8ea8-32df-4868-8797-04398bef66c3.png">
+
+This goes on and on :)
+
+---
+
+
+
 
