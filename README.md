@@ -14,9 +14,10 @@
 [Common Functions](#functions)
 [Cursor Object](#cursor-object)
 [Projection](#projection)
-[Working With Arrays](#arrays)
 [Using $gt $lt](#basic-operators)
 [Chapter 1 Summary](#summary-1)
+[MongoDB Compass](#compass)
+[Working With Arrays](#arrays)
 
 
 <p id="introduction">
@@ -436,3 +437,53 @@ Max
  ---
  
  
+<h2>Chapter 2</h2>
+
+<p id="compass">
+<h3>MongoDB Compass</h3>
+</p>
+
+Actually, MongoDB Compass is more powerful and developer friendly than Robo3T.
+
+<p align="center">
+ <img width="900" alt="Screen Shot 2021-09-16 at 7 18 54 PM" src="https://user-images.githubusercontent.com/31994778/133648646-0b84e499-3e10-4264-b0ea-73f99ef9cc3f.png">
+ </p>
+ 
+ One of the advantages of Compass over Robo3T is the aggregation support.
+ 
+ <p align="center">
+<img width="900" alt="Screen Shot 2021-09-16 at 7 21 57 PM" src="https://user-images.githubusercontent.com/31994778/133649249-35363acc-955e-4289-a198-4c911f8a7575.png">
+ </p>
+ 
+ We can do anything that we do in Robo3T.
+ 
+ <p align="center">
+ <img width="710" alt="Screen Shot 2021-09-16 at 7 24 41 PM" src="https://user-images.githubusercontent.com/31994778/133649497-f4978c1e-96d6-43bb-9a7d-da3ee1ad3a5c.png">
+</p>
+
+---
+
+<p id="arrays">
+<h3>Working with Arrays</h3>
+
+MongoDB documents can contain arrays. Arrays can contain heterogenous data types, like a string and integer at the same time, or homogenous, such as all elements of an array are strings. Arrays can even contain objects.
+
+For example:
+
+<img width="412" alt="Screen Shot 2021-09-16 at 8 07 21 PM" src="https://user-images.githubusercontent.com/31994778/133655469-1764946f-6187-4685-9249-3ac7d5dbea43.png">
+
+<img width="366" alt="Screen Shot 2021-09-16 at 8 08 07 PM" src="https://user-images.githubusercontent.com/31994778/133655485-f4a37f51-df8c-490a-944d-e7d24978b0e4.png">
+
+<img width="371" alt="Screen Shot 2021-09-16 at 8 08 26 PM" src="https://user-images.githubusercontent.com/31994778/133655501-6c12d1f4-8ff1-4f0f-a134-273a9f4274ec.png">
+
+We can also store objects inside an array:
+
+<img width="444" alt="Screen Shot 2021-09-16 at 8 16 29 PM" src="https://user-images.githubusercontent.com/31994778/133656360-2c11e972-80a0-4a4c-8476-dcb14b1825b4.png">
+
+and the query for that was
+
+`db.users.updateOne({"hobbies":"technology"}, {"$addToSet":{"hobbies":{"name":"skiing", "beenDoingYears":11, "team":"solo"}}})`
+
+
+</p>
+
