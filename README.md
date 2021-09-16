@@ -21,6 +21,7 @@
 [Accessing Fields of a Nested Document](#accessing-fields)
 [Understanding Ordered Insert](#ordered-insert)
 [Understanding writeConcern](#write-concern)
+[Atomicity](#atomicity)
 
 
 <p id="introduction">
@@ -650,6 +651,22 @@ db.students.insertMany([{"name":"Burak"}, {"name":"Ahmet"}, {"name":"Berna"}, {"
 Here, since acknowledged:false, we can't know instantly whether these documents were added successfully unless we check the db.
 
 <b>writeConcern can also be applied to update and delete operations.</b>
+
+---
+
+<p id="atomicity">
+ <h3>Atomicity</h3>
+ </p>
+
+<img width="997" alt="Screen Shot 2021-09-16 at 11 16 11 PM" src="https://user-images.githubusercontent.com/31994778/133680180-793f6798-3106-4006-aa04-096dc28bcb98.png">
+
+In MongoDBs create operations, atomicity applies in document level. What does that mean?
+
+This means that when we create documents in our DB, with many nested fields or not, MongoDB <b>will either successfully insert it or, if anything goes wrong, won't insert that document at all.</b> So we have two options, either success or failure.
+
+This also means that when we have a very large document to insert, it is impossible for MongoDB to insert some fields of that document and not insert other fields.
+
+This is the atomicity of MongoDB document insertion.
 
 ---
 
