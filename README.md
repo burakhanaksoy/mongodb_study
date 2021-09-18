@@ -23,6 +23,7 @@
 [Understanding writeConcern](#write-concern)
 [Atomicity](#atomicity)
 [Deep Dive into Read Operations](#read-operations)
+[Operators](#operators)
 
 
 <p id="introduction">
@@ -679,7 +680,197 @@ This is the atomicity of MongoDB document insertion.
  <h2>Deep Dive into Read Operations</h2>
  </p>
 
+Up to now, we dealt with insert operations, i.e., insertOne, insertMany, and how to customize these inserts with some parameters, i.e., writeConcern and {"ordered":false}.
 
+<b>Insert operations is only useful as long as we fetch the data we inserted.</b>
 
+So, in this part, let us deep dive into reading operations in MongoDB.
 
+<p align="center">
+<img width="819" alt="Screen Shot 2021-09-18 at 7 54 55 PM" src="https://user-images.githubusercontent.com/31994778/133896406-d2f7dad5-567c-4cea-b186-84223c57be56.png">
+</p
+
+<p id="operators">
+ <h3>Operators</h3>
+ </p>
+
+<p align="center">
+<img width="650" alt="Screen Shot 2021-09-18 at 8 01 48 PM" src="https://user-images.githubusercontent.com/31994778/133896599-2f27d9ae-69a6-4996-8946-61f8a35addf2.png">
+</p>
+
+Now, we have a DB like this:
+
+<img width="455" alt="Screen Shot 2021-09-18 at 8 15 17 PM" src="https://user-images.githubusercontent.com/31994778/133896986-735445bf-c9a1-4f70-8462-270e1be4bb56.png">
+
+<h3>Comparison Operators</h3>
+
+Now, let's use some comparison operators.
+
+<h4>$lt</h4>
+
+I want to find customers whose age is less than 35
+
+```
+db.customers.find({"age":{"$lt":35}}, {"_id":0})
+{ name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 26,
+  occupation: 'Junior Python Developer',
+  address: { city: 'Istanbul', country: 'Turkey' },
+  hobbies: [ 'music', 'games' ] }
+{ name: 'Max',
+  last_name: 'Garner',
+  age: 32,
+  occupation: 'Sous Chef',
+  address: { city: 'New York', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+```
+
+<h4>$lte</h4>
+
+I want to find customers whose age is less than or equal to 44
+
+```
+db.customers.find({"age":{"$lte":44}}, {"_id":0})
+{ name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 26,
+  occupation: 'Junior Python Developer',
+  address: { city: 'Istanbul', country: 'Turkey' },
+  hobbies: [ 'music', 'games' ] }
+{ name: 'Max',
+  last_name: 'Garner',
+  age: 32,
+  occupation: 'Sous Chef',
+  address: { city: 'New York', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+{ name: 'Alex',
+  last_name: 'Schafer',
+  age: 44,
+  occupation: 'Project Manager',
+  address: { city: 'Texas', country: 'U.S.A' },
+  hobbies: [ 'cars', 'wildlife' ] }
+  ```
+  
+  We can use `$gt` and `$gte` in the same way.
+  
+  <h4>$ne</h4>
+  
+  To filter documents whose field is not equal to the given value.
+  
+  <img width="444" alt="Screen Shot 2021-09-18 at 8 29 15 PM" src="https://user-images.githubusercontent.com/31994778/133897389-299779f3-b71b-4941-978a-c6edf4b7353e.png">
+  
+  ---
+  
+  <h4>$in</h4>
+  
+  Matches any of the values specified in an array.
+  
+  ```
+  db.customers.find({hobbies:{"$in":["cooking"]}})
+{ _id: ObjectId("61461e6c93587d2fb830c1ca"),
+  name: 'Max',
+  last_name: 'Garner',
+  age: 32,
+  occupation: 'Sous Chef',
+  address: { city: 'New York', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+{ _id: ObjectId("61461e6c93587d2fb830c1cc"),
+  name: 'Homer',
+  last_name: 'Simpson',
+  age: 54,
+  occupation: 'Nuclear Plant Worker',
+  address: { city: 'Chicago', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+  ```
+  
+  ---
+  
+  <h4>$nin</h4>
+  
+  ```
+  { _id: ObjectId("61461e6c93587d2fb830c1c9"),
+  name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 26,
+  occupation: 'Junior Python Developer',
+  address: { city: 'Istanbul', country: 'Turkey' },
+  hobbies: [ 'music', 'games' ] }
+{ _id: ObjectId("61461e6c93587d2fb830c1cb"),
+  name: 'Alex',
+  last_name: 'Schafer',
+  age: 44,
+  occupation: 'Project Manager',
+  address: { city: 'Texas', country: 'U.S.A' },
+  hobbies: [ 'cars', 'wildlife' ] }
+  ```
+  
+  ---
+  
+  <h4>$or</h4>
+  
+  Joins query clauses with a logical OR returns all documents that match the conditions of either clause.
+  
+  ```
+  db.customers.find({"$or":[{"hobbies":{"$in":["cooking"]}}, {"hobbies":{"$in":["wildlife"]}}]})
+  { name: 'Max',
+  last_name: 'Garner',
+  hobbies: [ 'cooking', 'movies' ] }
+  { name: 'Alex',
+  last_name: 'Schafer',
+  hobbies: [ 'cars', 'wildlife' ] }
+  { name: 'Homer',
+  last_name: 'Simpson',
+  hobbies: [ 'cooking', 'movies' ] }
+  ```
+  
+  This will fetch the customers that have hobbies either cooking or wildlife, or both.
+  
+  ---
+  
+  <h4>$and</h4>
+  
+  Joins query clauses with a logical AND returns all documents that match the conditions of both clauses.
+  
+  ```
+  db.customers.find({"$and":[{"hobbies":{"$in":["cars"]}}, {"age":{"$lt":45}}]})
+{ name: 'Alex',
+  last_name: 'Schafer',
+  age: 44,
+  occupation: 'Project Manager',
+  address: { city: 'Texas', country: 'U.S.A' },
+  hobbies: [ 'cars', 'wildlife' ] }
+  ```
+  
+  Returns documents that has <b>cars</b> in hobbies array <b>AND</b> <b>age</b> less than 44.
+  
+  ---
+  
+  <h4>$not</h4>
+  
+  Inverts the effect of a query expression and returns documents that do not match the query expression.
+  
+  ```
+  db.customers.find({"$and":[{"hobbies":{"$not":{"$in":["cars"]}}}, {"age":{"$lt":45}}]})
+  ```
+  
+  <img width="438" alt="Screen Shot 2021-09-18 at 9 36 06 PM" src="https://user-images.githubusercontent.com/31994778/133905130-9ac67545-4e1b-48ef-9e21-a70958447d92.png">
+
+Finding documents whose array doesn't contain `"cars"` and age is less than 45.
+
+<b>$not basically negates the operator that succeeds.</b>
+
+`{"hobbies":{"$not":{"$in":["cars"]}}} == {"hobbies":{"$nin":["cars"]}}`
+
+---
+
+<h4>$exists</h4>
+
+Matches documents that have the specified field.
+
+`db.customers.find({"last_name":{"$exists":false}})`
+
+This query returns documents that doesn't have `last_name` field.
+
+---
 
