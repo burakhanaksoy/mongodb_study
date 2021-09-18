@@ -784,6 +784,24 @@ db.customers.find({"age":{"$lte":44}}, {"_id":0})
   hobbies: [ 'cooking', 'movies' ] }
   ```
   
+  ```
+  db.customers.find({"age":{"$in":[32, 44]}})
+{ _id: ObjectId("61461e6c93587d2fb830c1ca"),
+  name: 'Max',
+  last_name: 'Garner',
+  age: 32,
+  occupation: 'Sous Chef',
+  address: { city: 'New York', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+{ _id: ObjectId("61461e6c93587d2fb830c1cb"),
+  name: 'Alex',
+  last_name: 'Schafer',
+  age: 44,
+  occupation: 'Project Manager',
+  address: { city: 'Texas', country: 'U.S.A' },
+  hobbies: [ 'cars', 'wildlife' ] }
+  ```
+  
   ---
   
   <h4>$nin</h4>
