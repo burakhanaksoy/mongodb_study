@@ -874,3 +874,131 @@ This query returns documents that doesn't have `last_name` field.
 
 ---
 
+<h4>$regex</h4>
+
+Selects documents where values match a specified regular expression.
+
+```json
+{ <field>: { $regex: /pattern/, $options: '<options>' } }
+{ <field>: { $regex: 'pattern', $options: '<options>' } }
+{ <field>: { $regex: /pattern/<options> } }
+```
+
+```
+db.customers.find({"occupation":{"$regex":/(.)r\Z/}})
+{ _id: ObjectId("61461e6c93587d2fb830c1c9"),
+  name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 26,
+  occupation: 'Junior Python Developer',
+  address: { city: 'Istanbul', country: 'Turkey' },
+  hobbies: [ 'music', 'games' ] }
+{ _id: ObjectId("61461e6c93587d2fb830c1cb"),
+  name: 'Alex',
+  last_name: 'Schafer',
+  age: 44,
+  occupation: 'Project Manager',
+  address: { city: 'Texas', country: 'U.S.A' },
+  hobbies: [ 'cars', 'wildlife' ] }
+{ _id: ObjectId("61461e6c93587d2fb830c1cc"),
+  name: 'Homer',
+  last_name: 'Simpson',
+  age: 54,
+  occupation: 'Nuclear Plant Worker',
+  address: { city: 'Chicago', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+```
+
+Here, `/(.)r\Z/` is used for finding the ones with occupation field's last two characters ending with `(.)r`, meaning it has to end with `r` but the letter before `r` can be anything.
+
+Let's say that we have a document like this:
+
+```
+{
+   "name":"Bob",
+   "last_name":"Bates",
+   "age":54,
+   "occupation":"Cyroproctor",
+   "address":{
+      "city":"New Delhi",
+      "country":"India"
+   },
+   "hobbies":[
+      "cooking",
+      "movies"
+   ]
+}
+```
+
+The following query will find occupations ending with [any character but `o`] and `r`.
+
+```
+db.customers.find({"occupation":{"$regex":/[^o]r\Z/}})
+```
+
+We can also search for array items with ignore case.
+
+`db.customers.find({"hobbies":{"$regex":/Cooking/}})`
+
+This returns no document.
+
+But if we search like this:
+
+```
+db.customers.find({"hobbies":{"$regex":/COoKIng/, "$options":"i"}})
+{ _id: ObjectId("61461e6c93587d2fb830c1ca"),
+  name: 'Max',
+  last_name: 'Garner',
+  age: 32,
+  occupation: 'Sous Chef',
+  address: { city: 'New York', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+{ _id: ObjectId("61461e6c93587d2fb830c1cc"),
+  name: 'Homer',
+  last_name: 'Simpson',
+  age: 54,
+  occupation: 'Nuclear Plant Worker',
+  address: { city: 'Chicago', country: 'U.S.A' },
+  hobbies: [ 'cooking', 'movies' ] }
+{ _id: ObjectId("614636b693587d2fb830c1cd"),
+  name: 'Bob',
+  last_name: 'Bates',
+  age: 54,
+  occupation: 'Cyroproctor',
+  address: { city: 'New Delhi', country: 'India' },
+  hobbies: [ 'cooking', 'movies' ] }
+  ```
+  
+  Here, `"$options":"i"` is for ignoring lower-upper case characters.
+
+---
+
+<h4>Using operators in nested fields</h4>
+
+Let's say we want to find documents whose "address" field's "city" does not start with "new" ignore case.
+
+`db.customers.find({"address.city":{"$regex":/^(?!new)/, "$options":"i"}})`
+
+<img width="614" alt="Screen Shot 2021-09-18 at 10 33 16 PM" src="https://user-images.githubusercontent.com/31994778/133906502-4f46b0f0-754d-4508-9c15-1a6d5e0eb25e.png">
+
+Let's find the ones with country different than U.S.A
+
+```
+db.customers.find({"address.country":{"$ne":"U.S.A"}}, {"_id":0})
+{ name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 26,
+  occupation: 'Junior Python Developer',
+  address: { city: 'Istanbul', country: 'Turkey' },
+  hobbies: [ 'music', 'games' ] }
+{ name: 'Bob',
+  last_name: 'Bates',
+  age: 54,
+  occupation: 'Cyroproctor',
+  address: { city: 'New Delhi', country: 'India' },
+  hobbies: [ 'cooking', 'movies' ] }
+```
+  
+  
+---
+
