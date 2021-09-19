@@ -1143,3 +1143,35 @@ There are 3 documents whose hobbies array contains objects with perWeek field `6
 
 ---
 
+<h4>$elemMatch</h4>
+
+So, let's say that we these documents in our db...
+
+<img width="407" alt="Screen Shot 2021-09-19 at 11 07 41 PM" src="https://user-images.githubusercontent.com/31994778/133941581-87dca04d-c5cf-4635-88c8-2d550544dd0e.png">
+
+And, say that we want to find the documents with hobbie name cooking and perWeek is 3.
+
+Try
+
+`db.customers.find({"$and":[{"hobbies.name":"cooking"}, {"hobbies.perWeek":3}]})`
+
+Returns
+
+<img width="522" alt="Screen Shot 2021-09-19 at 11 18 22 PM" src="https://user-images.githubusercontent.com/31994778/133941851-d959ddbe-c095-4eb0-85ad-b3ae65f9ab6c.png">
+
+What's wrong with this query is that it returns hobbies with name "cooking" and hobbies with perWeek 3. <b>We need to tell MongoDB that we want these be applied to the same document.</b>
+
+For that, use $elemMatch
+
+<b>The $elemMatch operator matches documents that contain an array field with at least one element that matches all the specified query criteria.</b>
+
+```
+{ <field>: { $elemMatch: { <query1>, <query2>, ... } } }
+```
+
+<img width="650" alt="Screen Shot 2021-09-19 at 11 30 43 PM" src="https://user-images.githubusercontent.com/31994778/133942101-e05ebd8f-29f6-4168-b7b7-b7df5e31c92b.png">
+
+Voila!
+
+---
+
