@@ -1065,3 +1065,25 @@ But, if we added 100 to account.balance
 
 <img width="364" alt="Screen Shot 2021-09-19 at 10 47 24 AM" src="https://user-images.githubusercontent.com/31994778/133919684-b7271d5e-c444-4fd0-8c86-8d0d6d07d77b.png">
 
+Lastly, let's use $cond operator to find customers with balance is greater than debt. However, we will make it so that balance and credit will be summed up and compared if balance is less than debt, else balance is compared with debt directly without summing with credit.
+
+<b>Pseudo Code</b>
+```
+if balance < debt:
+    balance += credit
+    # Compare new balance with debt
+else:
+    # Compare balance with debt
+```
+
+```
+db.customers.find({"$expr":{"$gt":["$account.debt", {"$cond":{"if":{"$gt":["$account.balance", "$account.debt"]}, then:"$account.balance", else:{"$add":["$account.balance", "$account.credit"]}}}]}})
+```
+
+<img width="480" alt="Screen Shot 2021-09-19 at 11 28 49 AM" src="https://user-images.githubusercontent.com/31994778/133920798-2f38bb75-3eb3-475d-a5c1-8dee53ffc689.png">
+
+This is a bit contrived and complex query, it has aggregation inside, which makes things more complex, but still, very useful.
+
+---
+
+
