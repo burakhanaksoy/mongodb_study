@@ -1087,3 +1087,59 @@ This is a bit contrived and complex query, it has aggregation inside, which make
 ---
 
 
+<h3>Querying Arrays</h3>
+
+Say that we have documents like the following in our DB:
+
+<img width="546" alt="Screen Shot 2021-09-19 at 12 17 21 PM" src="https://user-images.githubusercontent.com/31994778/133922135-9204bae1-7e64-430f-8472-08548c90b850.png">
+
+Let's say I want to find every document with hobbies array has an object with name "cooking".
+
+<img width="765" alt="Screen Shot 2021-09-19 at 12 21 11 PM" src="https://user-images.githubusercontent.com/31994778/133922220-a0abf5ff-3c6a-4181-b8fe-5ef7f8db65b4.png">
+
+Here, we reach the JSON object's fields inside array with `arrayField.objectField` syntax.
+
+<b>Here, although `name` is not a direct field of hobbies array, MongoDB can understand that we want to search `name` field of objects inside hobbies array.</b>
+
+---
+
+<h4>$size</h4>
+
+The $size operator matches any array with the number of elements specified by the argument.
+
+Say that I want to find the document which has 3 documents in hobbies array.
+
+```
+db.customers.find({"hobbies":{"$size":3}})
+{ _id: ObjectId("6147042c1f3ef37225babbe3"),
+  name: 'Janeth',
+  last_name: 'Thompson',
+  age: 22,
+  occupation: 'student',
+  address: { city: 'New Mexico', country: 'U.S.A' },
+  account: { balance: 300, debt: 550, credit: 200 },
+  hobbies: 
+   [ { name: 'languages', perWeek: 5 },
+     { name: 'running', perWeek: 3 },
+     { name: 'movies', perWeek: 2 } ] }
+```
+
+---
+
+<h4>$all</h4>
+
+The $all operator selects the documents where the value of a field is an array that contains all the specified elements.
+
+```
+db.customers.find({"hobbies.perWeek":{"$all":[1]}}).count()
+3
+db.customers.find({"hobbies.perWeek":{"$all":[1, 6]}}).count()
+1
+```
+
+This means that there's only one document whose hobbies array contains objects with perWeek field `1` and `6`.
+
+There are 3 documents whose hobbies array contains objects with perWeek field `6`.
+
+---
+
