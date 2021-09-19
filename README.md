@@ -1017,6 +1017,51 @@ db.customers.find({"address.country":{"$ne":"U.S.A"}}, {"_id":0})
   hobbies: [ 'cooking', 'movies' ] }
 ```
   
+  Let's find the ones with city field not in "New York" or "New Delhi"
+  
+  `db.customers.find({"address.city":{"$nin":["New York", "New Delhi"]}}, {"_id":0})`
+  
+  <img width="419" alt="Screen Shot 2021-09-19 at 9 57 40 AM" src="https://user-images.githubusercontent.com/31994778/133918559-dc8acc64-aaaf-46cc-9af8-84b58cce88ba.png">
   
 ---
+
+<h4>$expr</h4>
+
+<b>Allows the use of aggregation expressions within the query language.</b>
+
+<b>Syntax</b>
+
+```
+{ $expr: { <expression> } }
+```
+Let's add new `account` field for our customers.
+
+<img width="646" alt="Screen Shot 2021-09-19 at 10 25 35 AM" src="https://user-images.githubusercontent.com/31994778/133919143-f2ba0cdb-5762-4c0d-baea-eaa16646beec.png">
+
+What happens if we want to find out customers with debt greater than balance? We need to compare two fields of the same document.
+
+For that, we can use `$expr`
+
+<img width="700" alt="Screen Shot 2021-09-19 at 10 33 33 AM" src="https://user-images.githubusercontent.com/31994778/133919328-4b2304d4-ab54-479c-b6dd-8e750a158c98.png">
+
+
+Now, let's say that every customer in our bank has right to have a credit of 100 units.
+
+Let's find the customers who has debt > balance + credit.
+
+`db.customers.find({"$expr":{"$gt":["$account.debt", {"$add":["$account.balance", NumberInt("40")]}]}}, {"_id":0, "address":0, "hobbies":0})`
+
+This query does the following:
+
+1- Adds account.balance with 40.
+
+2- Finds documents with account.debt is greater than the 40 added account.balance.
+
+3- Projects out _id, address, hobbies fields from fetched documents.
+
+<img width="397" alt="Screen Shot 2021-09-19 at 10 47 02 AM" src="https://user-images.githubusercontent.com/31994778/133919677-70dd44de-3e77-4806-9f1d-e3bcc318235a.png">
+
+But, if we added 100 to account.balance
+
+<img width="364" alt="Screen Shot 2021-09-19 at 10 47 24 AM" src="https://user-images.githubusercontent.com/31994778/133919684-b7271d5e-c444-4fd0-8c86-8d0d6d07d77b.png">
 
