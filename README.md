@@ -24,6 +24,7 @@
 [Atomicity](#atomicity)
 [Deep Dive into Read Operations](#read-operations)
 [Operators](#operators)
+[Working With Cursors](#cursors)
 
 
 <p id="introduction">
@@ -1174,4 +1175,60 @@ For that, use $elemMatch
 Voila!
 
 ---
+
+<p id="cursors">
+<h2>Working With Cursors</h2>
+</p>
+
+We know that cursor object is to MongoDB generator is to Python.
+
+<h3>sort</h3>
+
+We can do sorting in cursor objects. For example:
+
+`db.customers.find({}).sort({"account.balance":1, "age":-1}).pretty()`
+
+This query basically sorts every document returned by the cursor object in terms of ascending account balance. Then, among these documents, it sorts them with respect to age in descending order.
+
+<img width="547" alt="Screen Shot 2021-09-20 at 10 05 53 PM" src="https://user-images.githubusercontent.com/31994778/134059871-7c211fad-6dde-4c65-8a28-79373d5a00a4.png">
+
+---
+
+<h3>skip</h3>
+
+Used mainly for pagination.
+
+For example, we have pages in our website and every page should have two documents...
+
+But before that, let's check this out..
+
+<img width="923" alt="Screen Shot 2021-09-20 at 10 17 44 PM" src="https://user-images.githubusercontent.com/31994778/134061329-65e69d6c-d798-4cee-9ad4-6a0e9f4e093a.png">
+
+Here, we do normal sorting and documents start from Janeth, Homer, Max, and so on.
+
+Now, skip(2)...
+
+<img width="1006" alt="Screen Shot 2021-09-20 at 10 18 53 PM" src="https://user-images.githubusercontent.com/31994778/134061456-4d849b7e-40cc-444c-a352-6d4211130189.png">
+
+Starts from Max, because we skipped the first two.
+
+Now, going back to pagination, let's talk about limit() first.
+
+---
+
+<h3>limit</h3>
+
+Used for limiting the amount of documents fetched.
+
+<img width="1072" alt="Screen Shot 2021-09-20 at 10 21 23 PM" src="https://user-images.githubusercontent.com/31994778/134061739-ef154e39-c28d-4484-9dfe-b40c0a265c7b.png">
+
+This is a good example for a web page that has 2 documents for every page. The next page must have skip(4).limit(2).
+
+Of course, for a pagination with 7 documents, when we come to page 8, only one document will be returned even if limit(2).
+
+<img width="1076" alt="Screen Shot 2021-09-20 at 10 23 18 PM" src="https://user-images.githubusercontent.com/31994778/134062133-a51051b4-541c-443d-b6ca-73c7080ca969.png">
+
+---
+
+
 
