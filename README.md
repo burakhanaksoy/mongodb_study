@@ -25,6 +25,7 @@
 [Deep Dive into Read Operations](#read-operations)
 [Operators](#operators)
 [Working With Cursors](#cursors)
+[Deep Dive into Update Operations](#update-operations)
 
 
 <p id="introduction">
@@ -1230,5 +1231,6 @@ Of course, for a pagination with 7 documents, when we come to page 8, only one d
 
 ---
 
-
-
+<p id="update-operations">
+<h2>Deep Dive into Update Operations</h2>
+</p>
