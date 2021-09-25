@@ -1143,6 +1143,10 @@ This means that there's only one document whose hobbies array contains objects w
 
 There are 3 documents whose hobbies array contains objects with perWeek field `6`.
 
+Another example:
+
+<img width="598" alt="Screen Shot 2021-09-25 at 10 20 30 AM" src="https://user-images.githubusercontent.com/31994778/134762783-25ab99a9-a45b-447a-a533-319e8f303277.png">
+
 ---
 
 <h4>$elemMatch</h4>
@@ -1187,11 +1191,17 @@ We know that cursor object is to MongoDB generator is to Python.
 
 We can do sorting in cursor objects. For example:
 
-`db.customers.find({}).sort({"account.balance":1, "age":-1}).pretty()`
+`db.customers.find({}).sort({"account.balance":1}).pretty()`
 
-This query basically sorts every document returned by the cursor object in terms of ascending account balance. Then, among these documents, it sorts them with respect to age in descending order.
+This query basically sorts every document returned by the cursor object in terms of ascending account balance. 
 
-<img width="547" alt="Screen Shot 2021-09-20 at 10 05 53 PM" src="https://user-images.githubusercontent.com/31994778/134059871-7c211fad-6dde-4c65-8a28-79373d5a00a4.png">
+<img width="502" alt="Screen Shot 2021-09-25 at 10 31 32 AM" src="https://user-images.githubusercontent.com/31994778/134763121-6c08d347-94ff-400f-806a-dc94d86420e8.png">
+
+Here, if we use "age":1 in sorting, the last two documents would be switched in place, since "Bob Bates", is older than "Kendrick Jenkins".
+
+`db.customers.find({}, {"_id":0, "address":0, "hobbies":0}).sort({"account.balance":1, "age":1}).pretty()`
+
+<img width="486" alt="Screen Shot 2021-09-25 at 10 33 27 AM" src="https://user-images.githubusercontent.com/31994778/134763226-602d1509-409e-4e0a-9d96-cd77de99906e.png">
 
 ---
 
@@ -1225,7 +1235,7 @@ Used for limiting the amount of documents fetched.
 
 This is a good example for a web page that has 2 documents for every page. The next page must have skip(4).limit(2).
 
-Of course, for a pagination with 7 documents, when we come to page 8, only one document will be returned even if limit(2).
+Of course, for a pagination with 7 documents, when we come to page 4, only one document will be returned even if limit(2).
 
 <img width="1076" alt="Screen Shot 2021-09-20 at 10 23 18 PM" src="https://user-images.githubusercontent.com/31994778/134062133-a51051b4-541c-443d-b6ca-73c7080ca969.png">
 
@@ -1234,3 +1244,68 @@ Of course, for a pagination with 7 documents, when we come to page 8, only one d
 <p id="update-operations">
 <h2>Deep Dive into Update Operations</h2>
 </p>
+
+<h3>Updating Multiple Fields with $set</h3>
+
+Say that I have a DB like this
+
+<img width="449" alt="Screen Shot 2021-09-25 at 10 54 05 AM" src="https://user-images.githubusercontent.com/31994778/134763808-e567cbb1-361d-45f0-a390-a915b63f2b76.png">
+
+Let's add two fields to all the documents.
+
+`db.student_info.updateMany({},{"$set":{"nationality":"Turkish", "school":"TEDU"}})`
+
+Then, all the matching documents will have two new fields, `nationality` and `school`, respectively.
+
+<img width="338" alt="Screen Shot 2021-09-25 at 10 56 32 AM" src="https://user-images.githubusercontent.com/31994778/134763890-123bdb01-6cb4-4e12-8959-c2bf63d90db4.png">
+
+---
+
+<h3>Incrementing and Decrementing Values</h3>
+
+<h4>$inc</h4>
+
+<b>Increments the value of the field by the specified amount.</b> [ref](https://docs.mongodb.com/manual/reference/operator/update-field/)
+
+<b><i>"$inc is an atomic operation within a single document."</i></b>
+
+Syntax:
+
+`{ $inc: { <field1>: <amount1>, <field2>: <amount2>, ... } }`
+
+Use
+
+`db.student_info.updateOne({"_id":ObjectId("614ed57293587d2fb830c1cf")}, {"$inc":{"age":1}})`
+
+This will increase age of "Burakhan Aksoy" by one.
+
+```js
+{ name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 27,
+  nationality: 'Turkish',
+  school: 'TEDU' 
+  }
+```
+
+As an extra, let's say we want to update / create a field named "info" which is an object, we can do as follows:
+
+`db.student_info.find({"name":"Burakhan"}).forEach((doc) => {db.student_info.updateOne({"name":doc.name}, {"$set":{"info.age":doc.age}})})`
+
+And, when we do find again
+
+```js
+db.student_info.find({"name":"Burakhan"})
+{ _id: ObjectId("614ed57293587d2fb830c1cf"),
+  name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 27,
+  nationality: 'Turkish',
+  school: 'TEDU',
+  info: { age: 27 } }
+```
+
+As we can see, "info" object added to our document with "age" value being equal to the current age field of the document.
+
+---
+
