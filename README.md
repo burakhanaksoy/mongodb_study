@@ -1307,5 +1307,59 @@ db.student_info.find({"name":"Burakhan"})
 
 As we can see, "info" object added to our document with "age" value being equal to the current age field of the document.
 
+We can also decrement by using $inc.
+
+`db.student_info.updateOne({"name":"Burakhan"}, {"$inc":{"age":-1}})`
+
+<img width="409" alt="Screen Shot 2021-09-25 at 1 22 24 PM" src="https://user-images.githubusercontent.com/31994778/134768123-a4c54527-d32d-40f6-bf27-32483390f901.png">
+
 ---
+
+<h3>$min</h3>
+
+<b>"Only updates the field if the specified value is less than the existing field value.</b> [ref](https://docs.mongodb.com/manual/reference/operator/update/min/#mongodb-update-up.-min)
+
+The $min updates the value of the field to a specified value if the specified value is less than the current value of the field.
+
+Let's say we have such documents in our student_info collection.
+
+<img width="431" alt="Screen Shot 2021-09-25 at 1 35 22 PM" src="https://user-images.githubusercontent.com/31994778/134768456-00734ecb-4e7f-45d7-a8ad-ad61f7d9f94c.png">
+
+Here, let's find out senior students by looking status field and set required minCredit to 20 for graduation.
+
+`db.student_info.updateMany({"status":"senior"}, {"$min":{"graduationRequirements.minCredit":20}})`
+
+<img width="400" alt="Screen Shot 2021-09-25 at 2 00 53 PM" src="https://user-images.githubusercontent.com/31994778/134769119-e7250be2-ca8b-499f-b1a9-9d4c52bd1e8d.png">
+
+---
+
+Let's do this with aggregation just for the kick of it.
+
+```js
+db.student_info.aggregate(
+[
+   {
+      "$match":{
+         "status":"senior",
+         "graduationRequirements.minCredit":{
+            "$gt":20
+         }
+      }
+   },
+   {
+      "$set":{
+         "graduationRequirements.minCredit":20
+      }
+   },
+   {
+      "$project":{
+         "_id":0,
+         "nationality":0
+      }
+   }
+])
+```
+
+---
+
 
