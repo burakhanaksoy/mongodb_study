@@ -26,6 +26,7 @@
 [Operators](#operators)
 [Working With Cursors](#cursors)
 [Deep Dive into Update Operations](#update-operations)
+[Understanding Upsert](#upsert)
 
 
 <p id="introduction">
@@ -1377,4 +1378,81 @@ db.student_info.aggregate(
 [ref](https://docs.mongodb.com/manual/reference/operator/update/mul/)
 
 ---
+
+<h3>Getting Rid of Fields</h3>
+
+We use $unset for removing fields from the document.
+
+<img width="398" alt="Screen Shot 2021-09-25 at 3 47 45 PM" src="https://user-images.githubusercontent.com/31994778/134772181-fd078ca8-34f6-4512-9edc-4fcb84205ee0.png">
+
+Let's remove "nationality" field.
+
+We use `db.student_info.updateMany({}, {"$unset":{"nationality":""}})`
+
+```
+{ acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0 }
+```
+
+Then
+
+<img width="407" alt="Screen Shot 2021-09-25 at 3 49 04 PM" src="https://user-images.githubusercontent.com/31994778/134772198-c9abab9e-60b5-4031-b58a-929dcbf54676.png">
+
+---
+
+<h3>Renaming a Field</h3>
+
+To rename a field, we use `$rename`.
+
+<b>The $rename operator updates the name of a field.</b> [ref](https://docs.mongodb.com/manual/reference/operator/update/rename/)
+
+So, let us rename `last_name` field to `lastName`.
+
+`db.student_info.updateMany({}, {"$rename":{"last_name":"lastName"}})`
+
+<img width="397" alt="Screen Shot 2021-09-25 at 5 06 10 PM" src="https://user-images.githubusercontent.com/31994778/134774356-e5de3b31-dacf-4b92-a726-352b04308636.png">
+
+---
+
+<div id="upsert">
+<h2>Understanding Upsert</h2>
+</div>
+
+Upsert can be thought as "<i>update <b>OR</b> insert"</i>.
+
+By default, MongoDB uses upsert=false.
+
+Let's see this on an example.
+
+`db.student_info.updateOne({"name":"spongebob"}, {"$set":{"age":21, "status":"junior", "school":"METU"}})`
+
+Now, we don't have a document with name:"spongebob", and when we try to update that document, we will have the following response:
+
+```js
+{ acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0 }
+```
+
+Here, matchedCount and modifiedCount are both 0. The former should be 0 of course, since there's no such document. The latter though, is related to upsert.
+
+if we set upsert:true, then MongoDB will create (insert) that document for us, hence the <b>insert</b> in up<b>sert</b>.
+
+Let's try again with upsert:true.
+
+`db.student_info.updateOne({"name":"spongebob"}, {"$set":{"age":21, "status":"junior", "school":"METU"}}, {"upsert":true})`
+
+<img width="445" alt="Screen Shot 2021-09-25 at 5 23 06 PM" src="https://user-images.githubusercontent.com/31994778/134774862-b80ca634-79bc-4eb2-979d-9f3d24d1aada.png">
+
+<b>As we can see, when upsert is set to true, the document is inserted.</b>
+
+<img width="395" alt="Screen Shot 2021-09-25 at 5 26 03 PM" src="https://user-images.githubusercontent.com/31994778/134774923-d8492c39-6a42-4f52-bed3-e99bb6e3ec58.png">
+
+---
+
 
