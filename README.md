@@ -1362,4 +1362,19 @@ db.student_info.aggregate(
 
 ---
 
+<h3>$max</h3>
+
+<b>The $max operator updates the value of the field to a specified value if the specified value is greater than the current value of the field.</b>[ref](https://docs.mongodb.com/manual/reference/operator/update/max/)
+
+---
+
+<h3>$mul</h3>
+
+<b>Multiply the value of a field by a number. To specify a $mul expression, use the following prototype:</b>
+
+`{ $mul: { <field1>: <number1>, ... } }`
+
+[ref](https://docs.mongodb.com/manual/reference/operator/update/mul/)
+
+---
 
