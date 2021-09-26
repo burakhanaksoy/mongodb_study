@@ -1613,3 +1613,39 @@ For more info, click [here](https://docs.mongodb.com/manual/reference/operator/u
 
 ---
 
+<h3>$addToSet vs $push</h3>
+
+Both of these operators are used for adding a new element into an array.
+
+However, <b>$addToSet doesn't add duplicate elements.</b>
+
+<h4>Using $push</h4>
+
+Let's update this document:
+
+<img width="544" alt="Screen Shot 2021-09-26 at 2 16 29 PM" src="https://user-images.githubusercontent.com/31994778/134805418-469c7e60-d58a-421f-bc57-8ccc6c14e547.png">
+
+```js
+db.customers.updateOne({"name":"Burakhan"}, {"$push":{"hobbies":{"name":"cycling", "perWeek":3, "isConsistent":true}}})
+{ acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0 }
+```
+
+<h4>Using $addToSet</h4>
+
+```js
+db.customers.updateOne({"name":"Burakhan"}, {"$addToSet":{"hobbies":{"name":"cycling", "perWeek":3, "isConsistent":true}}})
+{ acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0 }
+```
+
+As we can see, for $push, modifiedCount:1, for $addToSet, modifiedCount:0.
+
+---
+
