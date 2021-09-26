@@ -27,6 +27,7 @@
 [Working With Cursors](#cursors)
 [Deep Dive into Update Operations](#update-operations)
 [Understanding Upsert](#upsert)
+[Summary of Chapter 2](#summary-2)
 
 
 <p id="introduction">
@@ -1646,6 +1647,14 @@ db.customers.updateOne({"name":"Burakhan"}, {"$addToSet":{"hobbies":{"name":"cyc
 ```
 
 As we can see, for $push, modifiedCount:1, for $addToSet, modifiedCount:0.
+
+---
+
+<div id="summary-2">
+<h3>Summary of Chapter 2</h3>
+ </div>
+ 
+ <img width="967" alt="Screen Shot 2021-09-26 at 2 24 44 PM" src="https://user-images.githubusercontent.com/31994778/134805658-44bdc0de-b7ea-494a-b4ac-fe1565f33965.png">
 
 ---
 
