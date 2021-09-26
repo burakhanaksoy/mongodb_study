@@ -1455,4 +1455,76 @@ Let's try again with upsert:true.
 
 ---
 
+<h3>Updating Matched Array Elements</h3>
+
+We have studied this on `$elemMatch` part. However, we used that with `find()` method. Now, though, we will use $elemMatch with `updateMany()` and `updateOne()` methods.
+
+Switching back to our `bank` db. We have documents like this.
+
+<img width="473" alt="Screen Shot 2021-09-26 at 8 13 31 AM" src="https://user-images.githubusercontent.com/31994778/134794625-232eda93-b66b-46ab-a030-08a7e312ca98.png">
+
+Now, we want to find documents with hobbies named cooking and perWeek gte 3 and update that specific hobby.
+
+`db.customers.find({"hobbies":{"$elemMatch":{"name":"cooking", "perWeek":{"$gte":3}}}})`
+
+With this query, the documents we have are:
+
+<img width="499" alt="Screen Shot 2021-09-26 at 8 19 36 AM" src="https://user-images.githubusercontent.com/31994778/134794740-bb438fc8-8ffa-4d81-978f-b318e217ca04.png">
+
+Now, let's do the update.
+
+`db.customers.updateMany({"hobbies":{"$elemMatch":{"name":"cooking", "perWeek":{"$gte":3}}}}, {"$set":{"hobbies.$.highFrequency":true}})`
+
+```js
+{ acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0 }
+```
+
+Update is successful. Now let's talk about the use of `$` here in `{"$set":{"hobbies.$.highFrequency":true}}`.
+
+hobbies.<b>$</b>.highFrequency tells us the following:
+
+<b><i>"I will find hobbies array's that specific object you searched for and only update that object."</i></b>
+
+When we use find again, we will have:
+
+<img width="762" alt="Screen Shot 2021-09-26 at 8 28 51 AM" src="https://user-images.githubusercontent.com/31994778/134794903-e0443358-e393-4dbe-9bf7-4e852c1b6fdc.png">
+
+---
+
+<h3>Updating All Array Elements</h3>
+
+Previously, we used $ sign in hobbies.$.highFrequency to update only a specific element inside hobbies array.
+
+What happens when we want to update all array elements that matches our query?
+
+Say that we want add a new field `isConsistent:true` to all elements inside hobbies array with perWeek field gte 2.
+
+Can we use something like this?
+
+`db.customers.updateMany({"hobbies":{"$elemMatch":{"perWeek":{"$gte":2}}}}, {"$set":{"hobbies.$.isConsistent":true}})`
+
+only projecting hobbies, we get:
+
+<img width="543" alt="Screen Shot 2021-09-26 at 8 53 10 AM" src="https://user-images.githubusercontent.com/31994778/134795388-8c03e689-a897-426c-9cfe-16b488814679.png">
+
+How about the fields that are underlined? They have perWeek gte 2?
+
+This is because hobbies.$.isConsistent only updates the first element.
+
+For updating all elements in an array, we need to use `$[]`.
+
+`db.customers.updateMany({"hobbies":{"$elemMatch":{"perWeek":{"$gte":2}}}}, {"$set":{"hobbies.$[].isConsistent":true}})`
+
+<img width="579" alt="Screen Shot 2021-09-26 at 9 24 50 AM" src="https://user-images.githubusercontent.com/31994778/134796186-76be9a72-ad8f-4b05-a8a2-9fd295272c7d.png">
+
+But this updates all of the elements in the array, even if perWeek is not gte 2.
+
+Right now I don't know how to do this :), Let's address this challenge later.
+
+---
+
 
