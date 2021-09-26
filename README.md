@@ -1573,6 +1573,43 @@ Here, please check the [ref](https://docs.mongodb.com/manual/reference/operator/
 
 <img width="787" alt="Screen Shot 2021-09-26 at 11 56 28 AM" src="https://user-images.githubusercontent.com/31994778/134800985-d1867ab9-f558-4f83-9be0-9332379dec24.png">
 
+<img width="780" alt="Screen Shot 2021-09-26 at 11 58 45 AM" src="https://user-images.githubusercontent.com/31994778/134801048-8a88a403-2ab5-40b1-a5b9-7dbf795ace81.png">
+
+So, we have to use $sort with $each and after $push.
+
+<b>$push must be used here and empty array is used with $each if no elements will be added to the array.</b>
+
+Of course, for adding elements to an array we'll do the same thing but $each won't be empty array.
+
+For example:
+
+`db.customers.updateOne({"name":"Burakhan"}, {"$push":{"hobbies":{"$each":[{"name":"reading tech article", "perWeek":2}], "$sort":{"perWeek":1}}}})`
+
+<img width="539" alt="Screen Shot 2021-09-26 at 12 10 40 PM" src="https://user-images.githubusercontent.com/31994778/134801387-5490d638-6aa4-43cd-9c27-e0d1a983ed73.png">
+
+---
+
+<h3>Removing Elements from Array</h3>
+
+We use `$pull`.
+
+`db.customers.updateOne({"name":"Burakhan"}, {"$pull":{"hobbies":{"name":"reading tech article"}}})`
+
+```js
+db.customers.find({"name":"Burakhan"})
+{ _id: ObjectId("6150285893587d2fb830c1da"),
+  name: 'Burakhan',
+  last_name: 'Aksoy',
+  age: 26,
+  account: { balance: 500, debt: 300, credit: 200 },
+  address: { city: 'Istanbul', country: 'Turkey' },
+  occupation: 'Junior Python Developer',
+  hobbies: 
+   [ { name: 'cycling', perWeek: 3, isConsistent: true },
+     { name: 'cooking', perWeek: 5, isConsistent: true } ] }
+```
+
+For more info, click [here](https://docs.mongodb.com/manual/reference/operator/update/pull/).
 
 ---
 
