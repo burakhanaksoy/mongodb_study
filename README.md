@@ -1569,5 +1569,10 @@ This will sort our documents' hobbies field based on perWeek.
 
 <img width="563" alt="Screen Shot 2021-09-26 at 11 50 50 AM" src="https://user-images.githubusercontent.com/31994778/134800747-94ef9e7d-e164-45f9-a630-9f36f200b263.png">
 
+Here, please check the [ref](https://docs.mongodb.com/manual/reference/operator/update/sort/):
+
+<img width="787" alt="Screen Shot 2021-09-26 at 11 56 28 AM" src="https://user-images.githubusercontent.com/31994778/134800985-d1867ab9-f558-4f83-9be0-9332379dec24.png">
+
+
 ---
 
