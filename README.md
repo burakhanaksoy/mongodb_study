@@ -1523,8 +1523,51 @@ For updating all elements in an array, we need to use `$[]`.
 
 But this updates all of the elements in the array, even if perWeek is not gte 2.
 
-Right now I don't know how to do this :), Let's address this challenge later.
+For that, let's take a look at the following part.
 
 ---
 
+<h3>Update All Documents That Match arrayFilters in an Array</h3>
+
+`db.customers.updateMany({},{"$set":{"hobbies.$[elem].isConsistent":true}}, {multi:true, arrayFilters:[{"elem.perWeek":{"$gt":2}}]})`
+
+```js
+{ acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0 }
+```
+
+<img width="538" alt="Screen Shot 2021-09-26 at 11 14 38 AM" src="https://user-images.githubusercontent.com/31994778/134799591-9cc93301-4cac-4778-833a-3e7dc1a4d60a.png">
+
+Only added isConsistent:true to elements of hobbies array with perWeek > 2.
+
+For usage of arrayFilters, please take a look at [here](https://docs.mongodb.com/manual/reference/operator/update/positional-filtered/#mongodb-update-up.---identifier--).
+
+<img width="463" alt="Screen Shot 2021-09-26 at 11 17 17 AM" src="https://user-images.githubusercontent.com/31994778/134799675-70fb2681-c71b-4953-8f23-941e13495631.png">
+
+---
+
+<h3>Sorting Elements in Array</h3>
+
+Our documents' hobbies array contains elements with perWeek field.
+
+<img width="542" alt="Screen Shot 2021-09-26 at 11 32 19 AM" src="https://user-images.githubusercontent.com/31994778/134800172-0d8b34f7-f9a9-4d67-a71f-144dce2795e1.png">
+
+As we can see here, these are not sorted. I mean for some documents, perweek greater element comes before perweek smaller, and vice-versa.
+
+For example:
+
+<img width="558" alt="Screen Shot 2021-09-26 at 11 35 52 AM" src="https://user-images.githubusercontent.com/31994778/134800288-7739751c-dc21-4c1f-820f-ccfb0a91e394.png">
+
+For this document, perWeek smaller comes before perWeek greater.
+
+Let's use `db.customers.updateMany({}, {"$push":{"hobbies":{"$each":[], "$sort":{"perWeek":1}}}})`
+
+This will sort our documents' hobbies field based on perWeek.
+
+<img width="563" alt="Screen Shot 2021-09-26 at 11 50 50 AM" src="https://user-images.githubusercontent.com/31994778/134800747-94ef9e7d-e164-45f9-a630-9f36f200b263.png">
+
+---
 
