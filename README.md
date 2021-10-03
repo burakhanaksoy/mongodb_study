@@ -1668,3 +1668,89 @@ As we can see, for $push, modifiedCount:1, for $addToSet, modifiedCount:0.
  <img width="634" alt="Screen Shot 2021-09-26 at 11 03 12 PM" src="https://user-images.githubusercontent.com/31994778/134822453-6c354700-47b1-4bbe-a496-b4aa5a4aeef1.png">
  
  
+---
+
+</h3>$match</h3>
+
+<b><i>"Filters the documents to pass only the documents that match the specified condition(s) to the next pipeline stage."</b></i> [ref](https://docs.mongodb.com/manual/reference/operator/aggregation/match/)
+
+The $match stage has the following prototype form:
+
+```
+{ $match: { <query> } }
+```
+
+For example:
+
+`db.customers.aggregate([{"$match":{"age":{"$gt":30}}}])`
+
+<img width="552" alt="Screen Shot 2021-10-03 at 1 52 54 PM" src="https://user-images.githubusercontent.com/31994778/135750460-6bc9ecdf-3ddd-4ecd-88a7-9d274985aa5c.png">
+
+Here, these documents will be passed to the next stage.
+
+So, $match is only used for filtering and preparing wanted documents for the succeeding stage. **It is recommended to use $match stage as early as possible.**
+
+---
+
+<h3>$group</h3>
+
+Group stage allows us to group our data by certain fields.
+
+The $group stage has the following prototype form:
+```js
+{
+  $group:
+    {
+      _id: <expression>, // Group By Expression
+      <field1>: { <accumulator1> : <expression1> },
+      ...
+    }
+ }
+ ```
+ 
+ `db.customers.aggregate([{"$group":{_id:{"age":"$age"}, "count":{"$count":{}}}}])`
+ 
+ ```js
+ { _id: { age: 22 }, count: 1 }
+{ _id: { age: 26 }, count: 1 }
+{ _id: { age: 33 }, count: 1 }
+{ _id: { age: 32 }, count: 2 }
+```
+
+For example, here we have grouped documents by age and use $count operator (accumulator operator).
+
+With this logic, let's find the total users that has specific hobies.
+
+```js
+db.customers.aggregate([
+    {$unwind: {
+    path: "$hobbies"
+        }
+    },
+    {$group: {
+    _id: {
+                "hobby": "$hobbies.name"
+            },
+    persons: {
+                "$count": {}
+            }
+        }
+    },
+    {$project: {
+            "name": "$_id.hobby",
+            "persons": 1,
+            "_id": 0
+        }
+    }
+]).pretty()
+```
+
+```js
+{ persons: 1, hobby: 'good food' }
+{ persons: 1, hobby: 'languages' }
+{ persons: 2, hobby: 'cooking' }
+{ persons: 1, hobby: 'parachuting' }
+{ persons: 2, hobby: 'video games' }
+{ persons: 1, hobby: 'cycling' }
+{ persons: 2, hobby: 'running' }
+```
