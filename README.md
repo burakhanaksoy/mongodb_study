@@ -1754,3 +1754,21 @@ db.customers.aggregate([
 { persons: 1, hobby: 'cycling' }
 { persons: 2, hobby: 'running' }
 ```
+
+We used $unwind here because we want to unwind the hobbies array, then we use $group to group documents by hobby name. Then, we used $project to make the last touch.
+
+<b>Caveat:</b> $group does not order by default, for that we should use $sort operator.
+
+---
+
+<h3>$project</h3>
+
+<b><i>"Passes along the documents with the requested fields to the next stage in the pipeline. The specified fields can be existing fields from the input documents or newly computed fields."</b></i>
+
+We only use project to change the fields.
+
+<img width="1111" alt="Screen Shot 2021-10-03 at 3 31 49 PM" src="https://user-images.githubusercontent.com/31994778/135753905-3564186c-5bb0-44c5-b06e-b0a0efee2448.png">
+
+---
+
+
