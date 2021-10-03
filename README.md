@@ -1771,4 +1771,7 @@ We only use project to change the fields.
 
 ---
 
+<h3>$project vs $group</h3>
+
+<img width="800" alt="Screen Shot 2021-10-03 at 4 59 24 PM" src="https://user-images.githubusercontent.com/31994778/135756988-0312b689-0df0-477b-b61a-bc07ea3d83a9.png">
 
