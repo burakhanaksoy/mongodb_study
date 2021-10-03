@@ -1663,7 +1663,7 @@ As we can see, for $push, modifiedCount:1, for $addToSet, modifiedCount:0.
 <h2>Aggregation Framework</h2>
  </div>
  
- <b><i>"Retrieving data efficiently, in a structured way</b></i> [ref](https://pro.academind.com/p/mongodb-the-complete-developer-s-guide-2020)
+ <b><i>"Retrieving data efficiently, in a structured way"</b></i> [ref](https://pro.academind.com/p/mongodb-the-complete-developer-s-guide-2020)
  
  <img width="634" alt="Screen Shot 2021-09-26 at 11 03 12 PM" src="https://user-images.githubusercontent.com/31994778/134822453-6c354700-47b1-4bbe-a496-b4aa5a4aeef1.png">
  
