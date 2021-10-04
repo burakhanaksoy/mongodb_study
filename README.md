@@ -1869,6 +1869,170 @@ This example is a nice one, we used $substr, $toUpper, $concat, and $strLenCP op
 
 ---
 
+<h3>Using $convert in $project stage</h3>
+
+let'say that we have documents like this:
+
+<img width="571" alt="Screen Shot 2021-10-04 at 9 42 56 PM" src="https://user-images.githubusercontent.com/31994778/135906663-eb6e1dfa-d85b-4f3b-a575-9e8f09f1fd1e.png">
+
+Here, let's create a new field called location that stores latitude and longitude inside an array.
+
+<img width="547" alt="Screen Shot 2021-10-04 at 9 50 06 PM" src="https://user-images.githubusercontent.com/31994778/135907569-ff97f329-d2a1-4f64-bf0c-b595d83e4bbd.png">
+
+For this result, we used the following aggregation:
+
+```js
+db.customers.aggregate([
+    {
+        "$project": {
+            "location": [
+                "$address.location.longitude",
+                "$address.location.longitude"
+            ],
+            "name": 1,
+            "last_name": 1,
+            "address": 1,
+            "hobbies": 1,
+            "occupation": 1,
+            "age": 1,
+            "account": 1
+        }
+    },
+    {
+        "$project": {
+            "fullName": {
+                "$concat": [
+                    {
+                        "$toUpper": {
+                            "$substrCP": [
+                                "$name",
+                                0,
+                                1
+                            ]
+                        }
+                    },
+                    {
+                        "$substrCP": [
+                            "$name",
+                            1,
+                            {
+                                "$strLenCP": "$name"
+                            }
+                        ]
+                    },
+                    " ",
+                    {
+                        "$toUpper": {
+                            "$substrCP": [
+                                "$last_name",
+                                0,
+                                1
+                            ]
+                        }
+                    },
+                    {
+                        "$substrCP": [
+                            "$last_name",
+                            1,
+                            {
+                                "$strLenCP": "$last_name"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "age": 1,
+            "account": 1,
+            "address.city": 1,
+            "address.country": 1,
+            "occupation": 1,
+            "hobbies": 1,
+            "location": 1
+        }
+    }
+]).pretty()
+```
+
+Here, it's important to see that <b>we can use aggregation stages multiple times.</b>
+
+Now, let's convert location field elements to double.
+
+```js
+db.customers.aggregate([
+    {
+        "$project": {
+            "location": [
+                {"$convert":{input:"$address.location.latitude", to:"double"}},
+                {"$convert":{input:"$address.location.longitude", to:"double"}},
+            ],
+            "name": 1,
+            "last_name": 1,
+            "address": 1,
+            "hobbies": 1,
+            "occupation": 1,
+            "age": 1,
+            "account": 1
+        }
+    },
+    {
+        "$project": {
+            "fullName": {
+                "$concat": [
+                    {
+                        "$toUpper": {
+                            "$substrCP": [
+                                "$name",
+                                0,
+                                1
+                            ]
+                        }
+                    },
+                    {
+                        "$substrCP": [
+                            "$name",
+                            1,
+                            {
+                                "$strLenCP": "$name"
+                            }
+                        ]
+                    },
+                    " ",
+                    {
+                        "$toUpper": {
+                            "$substrCP": [
+                                "$last_name",
+                                0,
+                                1
+                            ]
+                        }
+                    },
+                    {
+                        "$substrCP": [
+                            "$last_name",
+                            1,
+                            {
+                                "$strLenCP": "$last_name"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "age": 1,
+            "account": 1,
+            "address.city": 1,
+            "address.country": 1,
+            "occupation": 1,
+            "hobbies": 1,
+            "location": 1
+        }
+    }
+]).pretty()
+```
+
+<img width="538" alt="Screen Shot 2021-10-04 at 10 00 15 PM" src="https://user-images.githubusercontent.com/31994778/135908944-86b1ae41-d86d-4e48-b99f-2d7c5c07f31c.png">
+
+---
+
 <h3>$project vs $group</h3>
 
 <img width="800" alt="Screen Shot 2021-10-03 at 4 59 24 PM" src="https://user-images.githubusercontent.com/31994778/135756988-0312b689-0df0-477b-b61a-bc07ea3d83a9.png">
