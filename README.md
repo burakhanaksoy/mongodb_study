@@ -1769,9 +1769,107 @@ We only use project to change the fields.
 
 <img width="1111" alt="Screen Shot 2021-10-03 at 3 31 49 PM" src="https://user-images.githubusercontent.com/31994778/135753905-3564186c-5bb0-44c5-b06e-b0a0efee2448.png">
 
+As another example, we can do string manipulations via $project.
+
+Imagine that name and last_name fields for some documents doesn't follow the same lower/upper-case pattern, i.e., some fields start with lower-case and others don't.
+
+<img width="1001" alt="Screen Shot 2021-10-04 at 7 46 35 PM" src="https://user-images.githubusercontent.com/31994778/135891418-bd365f51-5dac-4c4d-accd-ab65d3b45ba0.png">
+
+This is not very nice. Uniformity is what we want here. So, let's transform all name and last_name fields to start with an upper-cased letter and followed by lower-cased ones.
+
+```js
+db.customers.aggregate([
+    {
+        "$project": {
+            "_id": 0,
+            "name": {
+                "$concat": [
+                    "$name",
+                    " - ",
+                    "$last_name"
+                ]
+            }
+        }
+    }
+]).pretty()
+```
+
+```js
+{ name: 'Burakhan - Aksoy' }
+{ name: 'kendrick - Jenkins' }
+{ name: 'lina - lee' }
+{ name: 'justin - simpson' }
+{ name: 'gooding sr. - clifford' }
+```
+
+Let's do a bit more.
+
+```js
+db.customers.aggregate([
+    {
+        "$project": {
+            "fullName": {
+                "$concat": [
+                    {
+                        "$toUpper": {
+                            "$substr": [
+                                "$name",
+                                0,
+                                1
+                            ]
+                        }
+                    },
+                    {
+                        "$substr": [
+                            "$name",
+                            1,
+                            {
+                                "$strLenCP": "$name"
+                            }
+                        ]
+                    },
+                    " ",
+                    {
+                        "$toUpper": {
+                            "$substr": [
+                                "$last_name",
+                                0,
+                                1
+                            ]
+                        }
+                    },
+                    {
+                        "$substr": [
+                            "$last_name",
+                            1,
+                            {
+                                "$strLenCP": "$last_name"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "age": 1,
+            "account": 1,
+            "address": 1,
+            "occupation": 1,
+            "hobbies": 1,
+        }
+    }
+]).pretty()
+```
+
+Will give us:
+
+<img width="541" alt="Screen Shot 2021-10-04 at 8 55 58 PM" src="https://user-images.githubusercontent.com/31994778/135900551-a19e5785-f569-47dd-a3d4-2f0c5e5ea79c.png">
+
+This example is a nice one, we used $substr, $toUpper, $concat, and $strLenCP operators.
+
 ---
 
 <h3>$project vs $group</h3>
 
 <img width="800" alt="Screen Shot 2021-10-03 at 4 59 24 PM" src="https://user-images.githubusercontent.com/31994778/135756988-0312b689-0df0-477b-b61a-bc07ea3d83a9.png">
+
+---
 
