@@ -1865,6 +1865,8 @@ Will give us:
 
 This example is a nice one, we used $substr, $toUpper, $concat, and $strLenCP operators.
 
+<b>Here, instead of using $substr, we can use $substrCP.</b> For the difference, [click here](https://docs.mongodb.com/manual/reference/operator/aggregation/substrCP/)
+
 ---
 
 <h3>$project vs $group</h3>
