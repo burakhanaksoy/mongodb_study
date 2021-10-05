@@ -1759,6 +1759,20 @@ We used $unwind here because we want to unwind the hobbies array, then we use $g
 
 <b>Caveat:</b> $group does not order by default, for that we should use $sort operator.
 
+We should add this to the following stage:
+
+```js
+{
+    "$sort": {
+        "persons": -1
+    }
+}
+```
+
+And then, we get:
+
+<img width="327" alt="Screen Shot 2021-10-05 at 9 31 53 AM" src="https://user-images.githubusercontent.com/31994778/135971980-010d7ded-ef66-4166-9b2b-734cfcf34243.png">
+
 ---
 
 <h3>$project</h3>
