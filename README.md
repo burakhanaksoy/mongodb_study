@@ -2053,3 +2053,88 @@ db.customers.aggregate([
 
 ---
 
+<h3>Pushing Elements into Newly Created Arrays</h3>
+
+Now, let's say that we have documents like these in our db.
+
+<img width="425" alt="Screen Shot 2021-10-05 at 9 52 01 AM" src="https://user-images.githubusercontent.com/31994778/135974535-61a6c24e-9966-40f2-aa01-494a9de96fe5.png">
+
+As we can see, each document has a hobbies field as an array.
+
+Let's group these documents by age and push the hobbies array into a new field called hobbies. (name is the same)
+
+`db.student_info.aggregate([{"$group":{"_id":{"age":"$age"}, "hobbies":{"$push":"$hobbies"}}}])`
+
+This will give us:
+
+<img width="572" alt="Screen Shot 2021-10-05 at 10 01 29 AM" src="https://user-images.githubusercontent.com/31994778/135975478-b0981f1b-ca11-4b1b-823f-bd3b1d23205f.png">
+
+This is arrays inside an array. 
+
+This is because when we have two documents with same age, their hobbies array is pushed into the newly created array.
+
+<img width="405" alt="Screen Shot 2021-10-05 at 10 06 17 AM" src="https://user-images.githubusercontent.com/31994778/135976217-2ab44d47-a73a-4e89-9d92-dee8f495ac88.png">
+
+Then, what do we do if we want to convert these array of arrays into a single array?
+
+---
+
+<h3>$unwind</h3>
+
+<b><i>"Deconstructs an array field from the input documents to output a document for each element. Each output document is the input document with the value of the array field replaced by the element."</i></b> [REF](https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/)
+
+Using $unwind on hobbies path, we will get the following documents.
+
+<img width="796" alt="Screen Shot 2021-10-09 at 9 55 08 AM" src="https://user-images.githubusercontent.com/31994778/136647655-a214abcc-ea09-488b-8a9a-7d05e9cb51bd.png">
+
+Here, through using $unwind stage on hobbies array, the same document is extracted multiple times.
+
+The number of times the same document appears equals to the size of the $unwind path. Since the document encircled by a red box has its hobbies array containing two elements, it is extracted twice. Then, each extracted document has its hobbies field contain only a single element.
+
+Then, using $group here, we can do something like this:
+
+<img width="510" alt="Screen Shot 2021-10-09 at 10 47 50 AM" src="https://user-images.githubusercontent.com/31994778/136649412-40172b42-02e0-4776-bb9b-d655cd50dca5.png">
+
+Here, hobbies array does not contain arrays, but contain individual hobbies.
+
+The aggregation we used to achieve this is:
+
+```js
+[{$unwind: {
+        "path":"$hobbies"
+    }}, {$group: {
+  "_id":{
+    "age":"$age"
+  },
+  "hobbies": {
+                "$push": "$hobbies"
+            }
+}}]
+```
+
+As we can see, there's a duplicate element `skiing` at grouped document for age:21. To avoid duplicate documents, let's use $addToSet instead of $push.
+
+```js
+[{
+    $unwind: {
+        "path": "$hobbies"
+    }
+}, {
+    $group: {
+        "_id": {
+            "age": "$age"
+        },
+        "hobbies": {
+            "$addToSet": "$hobbies"
+        }
+    }
+}]
+```
+
+After that, we will have:
+
+<img width="503" alt="Screen Shot 2021-10-09 at 10 50 17 AM" src="https://user-images.githubusercontent.com/31994778/136649492-aae90621-57d4-45cf-8470-7afd936eb68d.png">
+
+---
+
+
