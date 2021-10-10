@@ -2137,4 +2137,87 @@ After that, we will have:
 
 ---
 
+<h3>Practice with using $filter, $addFields, $unwind</h3>
+
+Imagine that we have documents like this with examScores field as an array.
+
+<img width="437" alt="Screen Shot 2021-10-10 at 1 04 35 PM" src="https://user-images.githubusercontent.com/31994778/136691216-846d7630-10ed-49bd-a5d2-5fd6938dff51.png">
+
+Imagine that we want to find the highest exam score and show it in a new field called `highestExam`.
+
+At the end our documents should look like this:
+
+<img width="450" alt="Screen Shot 2021-10-10 at 1 08 47 PM" src="https://user-images.githubusercontent.com/31994778/136691365-71840302-54c9-4abd-aafd-b742519982e0.png">
+
+As displayed in the picture above, we need to search through the examScores array to find the exam with the highest score and create a new field called `highestExam` that contains the exam with the highest score.
+
+For that, let's use the following aggregation:
+
+<b>1st Stage</b>
+
+```js
+{
+    $addFields: {
+        "maxScore": {
+            "$max": "$examScores.score"
+        }
+    }
+}
+```
+
+By using addFields we add a new field to our document and using $max on examScores.score compares all the score values and return the max.
+
+<b>2nd Stage</b>
+
+```js
+{
+    $addFields: {
+        "highestExam": {
+            "$filter": {
+                input: "$examScores",
+                as: "arr",
+                cond: {
+                    "$eq": ["$$arr.score", "$maxScore"]
+                }
+            }
+        }
+    }
+}
+```
+
+Here, we use $addFields again to create `highestExam` field and use $filter to filter through examScores and find the one that equals to `maxScore`.
+
+<b>3rd Stage</b>
+
+```js
+{
+    $project: {
+        name: 1,
+        lastName: 1,
+        school: 1,
+        graduationRequirements: 1,
+        status: 1,
+        age: 1,
+        hobbies: 1,
+        examScores: 1,
+        highestExam: {
+            "$slice": ["$highestExam", 1]
+        }
+    }
+}
+```
+
+In this stage, we use $project to get rid of $maxScore field.
+
+<b>4th Stage</b>
+
+```js
+{
+    $unwind: {
+        path: "$highestExam"
+    }
+}
+```
+
+In this stage, we use $unwind to convert `highestExam` array to `highestExam` object.
 
