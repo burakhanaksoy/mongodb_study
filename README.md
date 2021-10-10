@@ -29,6 +29,7 @@
 [Understanding Upsert](#upsert)
 [Summary of Chapter 2](#summary-2)
 [Aggregation Framework](#aggregation-framework)
+[Summary of Chapter 3](#summary-3)
 
 
 <p id="introduction">
@@ -2221,3 +2222,10 @@ In this stage, we use $project to get rid of $maxScore field.
 
 In this stage, we use $unwind to convert `highestExam` array to `highestExam` object.
 
+---
+
+<div id="summary-3">
+<h2>Summary</h2>
+ </div>
+ 
+ <img width="974" alt="Screen Shot 2021-10-10 at 6 37 10 PM" src="https://user-images.githubusercontent.com/31994778/136702881-c58f88bc-5e71-46f9-848d-135f9a73b549.png">
